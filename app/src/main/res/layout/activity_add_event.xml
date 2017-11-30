@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.aupke.fridaybar.AddEventActivity">
+
+    <Button
+        android:id="@+id/addEventConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="confirmAddEvent"
+        android:text="Indsend"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.769" />
+
+    <EditText
+        android:id="@+id/addEventTitel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:ems="10"
+        android:hint="Titel"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/addEventDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:hint="Dato"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/addEventConfirm"
+        app:layout_constraintEnd_toEndOf="@+id/addEventTitel"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/addEventTitel"
+        app:layout_constraintTop_toBottomOf="@+id/addEventTitel"
+        app:layout_constraintVertical_bias="0.052" />
+
+    <EditText
+        android:id="@+id/addEventDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="Beskrivelse"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/addEventDate"
+        app:layout_constraintTop_toBottomOf="@+id/addEventDate" />
+</android.support.constraint.ConstraintLayout>

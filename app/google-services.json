@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "935215040049",
+    "firebase_url": "https://fridaybar-75e16.firebaseio.com",
+    "project_id": "fridaybar-75e16",
+    "storage_bucket": "fridaybar-75e16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935215040049:android:1b3038c38f925dd9",
+        "android_client_info": {
+          "package_name": "com.example.aupke.fridaybar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "935215040049-50hq5nh7upshll5vgpn24rsfujicbbm2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aupke.fridaybar",
+            "certificate_hash": "c3cd4d09d45c7705cf2199833dd213ad5a2e77dc"
+          }
+        },
+        {
+          "client_id": "935215040049-242a9a5k37l6ddu1dpuu61p660nb9p2n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWbR5WANPxYvkivqEynCT2jMwb3E7e5DM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "935215040049-242a9a5k37l6ddu1dpuu61p660nb9p2n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
