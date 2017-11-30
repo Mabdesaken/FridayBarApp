@@ -2,10 +2,12 @@ package com.example.aupke.fridaybar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -18,13 +20,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,7 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class Main2Activity extends AppCompatActivity implements LocationListener{
+public class Main2Activity extends AppCompatActivity implements LocationListener {
 
     DatabaseReference dref;
     ListView listview;
@@ -42,9 +42,7 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
     private String descriptionString = "Debug";
     private TextView mTextMessage;
 
-    private FusedLocationProviderClient lastKnownLocation;
-    private LocationManager locationManager;
-    private Location location;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -68,24 +66,35 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
             return false;
         }
     };
+    private Location lastKnownLocation;
 
-//oncreate
+    //oncreate
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        lastKnownLocation = LocationServices.getFusedLocationProviderClient(this);
-        String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(descriptionString, "Permissions not granted");
             ActivityCompat.requestPermissions(Main2Activity.this, perms, 1);
             return;
         }
-        location = locationManager.getLastKnownLocation(Context.LOCATION_SERVICE);
-        Log.e(descriptionString, String.valueOf(location.getLongitude()));
+        Log.e(descriptionString, "Succes: Permissions Granted");
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if(location!=null){
+
+                    lastKnownLocation = location;
+                }
+            }
+        });
+
+
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -109,8 +118,19 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
                 location.setLongitude(lng);
 
 
-                Log.e(descriptionString, String.valueOf(lat));
-                list.add((String) dataSnapshot.child("Title").getValue());
+                Log.e("Location of event: ", location.getLatitude() + " lng: " + location.getLongitude());
+                Log.e("Location of device: ", lastKnownLocation.getLatitude() + " lng: " + lastKnownLocation.getLongitude());
+
+                float locationDifference = location.distanceTo(lastKnownLocation);
+                float hardCodedDistance = 500;
+
+                String prefDifString = sharedPreferences.getString("example_text", "500");
+                Log.e("Preferences", prefDifString);
+                Log.e("Distance: ", locationDifference +"");
+                float prefDif = Float.parseFloat(prefDifString);
+                if(prefDif>locationDifference) {
+                    list.add((String) dataSnapshot.child("Title").getValue());
+                }
 
                 adapter.notifyDataSetChanged();
             }
@@ -150,19 +170,16 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
                             if(dataSnapshot1.getKey().equals("Description")){
                                 descriptionString = String.valueOf(dataSnapshot1.getValue());
                             }
-
                         }
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
                 Log.e("DES", descriptionString);
                 */
                 Intent intent = new Intent(Main2Activity.this, itemSelectedActivity.class);
-                String description = dref.child(item).child("Description").toString();
+                String description = dref.child(item).child("Description").getKey();
                 Log.e("D", description);
                 String date = String.valueOf(dref.child(item).child("Date"));
                 intent.putExtra("Description", description);
