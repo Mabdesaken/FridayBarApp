@@ -69,7 +69,7 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         }
     };
 
-
+//oncreate
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
