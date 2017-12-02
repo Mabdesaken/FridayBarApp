@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -28,10 +29,10 @@ public class AddEventActivity extends AppCompatActivity {
         String dateString = date.getText().toString();
         String descriptionString = description.getText().toString();
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("Datbar").child(titleString).child("Title").setValue(titleString);
-        mDatabase.child("Datbar").child(titleString).child("Date").setValue(dateString);
-        mDatabase.child("Datbar").child(titleString).child("Description").setValue(descriptionString);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Datbar").push();
+
+        Offer offer = new Offer(descriptionString, descriptionString, descriptionString);
+        mDatabase.setValue(offer);
 
         Intent intent = new Intent(AddEventActivity.this, MainActivity.class);
         startActivity(intent);

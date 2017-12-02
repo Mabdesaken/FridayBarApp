@@ -13,13 +13,16 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
@@ -37,10 +40,11 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
 
     DatabaseReference dref;
     ListView listview;
-    ArrayList<String> list = new ArrayList<>();
-    ArrayAdapter<String> adapter;
+    ArrayList<Offer> list = new ArrayList<>();
+    OfferAdapter adapter;
     private String descriptionString = "Debug";
     private TextView mTextMessage;
+
 
     private FusedLocationProviderClient mFusedLocationClient;
 
@@ -67,6 +71,7 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         }
     };
     private Location lastKnownLocation;
+    private SharedPreferences sharedPreferences;
 
     //oncreate
     @Override
@@ -74,25 +79,9 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(descriptionString, "Permissions not granted");
-            ActivityCompat.requestPermissions(Main2Activity.this, perms, 1);
-            return;
-        }
-        Log.e(descriptionString, "Succes: Permissions Granted");
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if(location!=null){
-
-                    lastKnownLocation = location;
-                }
-            }
-        });
+        getLocation();
 
 
         mTextMessage = (TextView) findViewById(R.id.message);
@@ -102,10 +91,15 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
 
+        //gestureDetector
+        final GestureDoubleTap gestureDoubleTap = new GestureDoubleTap();
+        GestureDetector gd = new GestureDetector(this, gestureDoubleTap);
+
         listview=(ListView)findViewById(R.id.listView);
-        adapter=new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line,list);
+        adapter=new OfferAdapter(this, list);
         listview.setAdapter(adapter);
         dref= FirebaseDatabase.getInstance().getReference().child("Events");
+
         dref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -113,23 +107,27 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
 
                 double lat = (double) dataSnapshot.child("Lat").getValue();
                 double lng = (double) dataSnapshot.child("Lng").getValue();
-                Location location = new Location("");
-                location.setLatitude(lat);
-                location.setLongitude(lng);
+                Location locationOfferDistanceToLocation = new Location("");
+                locationOfferDistanceToLocation.setLatitude(lat);
+                locationOfferDistanceToLocation.setLongitude(lng);
+                String offerTitle = String.valueOf(dataSnapshot.child("Title").getValue());
+                String offerDescription = String.valueOf(dataSnapshot.child("Description").getValue());
 
 
-                Log.e("Location of event: ", location.getLatitude() + " lng: " + location.getLongitude());
+
+                Log.e("Location of event: ", locationOfferDistanceToLocation.getLatitude() + " lng: " + locationOfferDistanceToLocation.getLongitude());
                 Log.e("Location of device: ", lastKnownLocation.getLatitude() + " lng: " + lastKnownLocation.getLongitude());
 
-                float locationDifference = location.distanceTo(lastKnownLocation);
-                float hardCodedDistance = 500;
-
+                int locationDifference = (int) locationOfferDistanceToLocation.distanceTo(lastKnownLocation);
+                String offerDistanceToLocation = String.valueOf(locationDifference);
+                Offer offer = new Offer(offerDistanceToLocation, offerTitle, offerDescription);
+                Log.e("OFFER LOCATION TO", offer.getDistanceToLocation());
                 String prefDifString = sharedPreferences.getString("example_text", "500");
                 Log.e("Preferences", prefDifString);
                 Log.e("Distance: ", locationDifference +"");
                 float prefDif = Float.parseFloat(prefDifString);
                 if(prefDif>locationDifference) {
-                    list.add((String) dataSnapshot.child("Title").getValue());
+                    list.add(offer);
                 }
 
                 adapter.notifyDataSetChanged();
@@ -158,34 +156,44 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         });
 
 
+
+
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                String item = String.valueOf(adapter.getItemAtPosition(position));
-                Log.e("D", item);
-                /*dref.child(item).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for ( DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                            if(dataSnapshot1.getKey().equals("Description")){
-                                descriptionString = String.valueOf(dataSnapshot1.getValue());
-                            }
-                        }
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-                Log.e("DES", descriptionString);
-                */
+
+                Offer item = (Offer) adapter.getItemAtPosition(position);
+                String itdes = item.getDescription();
+                Log.e("D", itdes);
+
                 Intent intent = new Intent(Main2Activity.this, itemSelectedActivity.class);
-                String description = dref.child(item).child("Description").getKey();
-                Log.e("D", description);
-                String date = String.valueOf(dref.child(item).child("Date"));
-                intent.putExtra("Description", description);
-                intent.putExtra("Date", date);
+                intent.putExtra("Title", item.getTitle());
+                intent.putExtra("Description", item.getDescription());
+                intent.putExtra("Distance", item.getDistanceToLocation());
+
                 //based on item add info to intent
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void getLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.e(descriptionString, "Permissions not granted");
+            ActivityCompat.requestPermissions(Main2Activity.this, perms, 1);
+            return;
+        }
+        Log.e(descriptionString, "Succes: Permissions Granted");
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if(location!=null){
+                    lastKnownLocation = location;
+                }else {
+                    Log.e("FAIL IN", "getLocation");
+                }
             }
         });
     }
@@ -210,5 +218,9 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
     @Override
     public void onLocationChanged(Location location) {
 
+    }
+    public void addOffer(View view){
+        Intent intent = new Intent(Main2Activity.this, AddEventActivity.class);
+        startActivity(intent);
     }
 }
