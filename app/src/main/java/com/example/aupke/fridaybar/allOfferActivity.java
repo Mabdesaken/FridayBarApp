@@ -30,10 +30,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 public class allOfferActivity extends AppCompatActivity implements LocationListener, ChildEventListener, AdapterView.OnItemClickListener {
 
@@ -78,10 +84,9 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.all_offers_activity);
 
-         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         getLocation();
-
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -94,10 +99,10 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         final GestureDoubleTap gestureDoubleTap = new GestureDoubleTap();
         GestureDetector gd = new GestureDetector(this, gestureDoubleTap);
 
-        listview=(ListView)findViewById(R.id.listView);
-        adapter=new OfferAdapter(this, list);
+        listview = (ListView) findViewById(R.id.listView);
+        adapter = new OfferAdapter(this, list);
         listview.setAdapter(adapter);
-        dref= FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
+        dref = FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
 
         listview.setOnItemClickListener(this);
     }
@@ -127,9 +132,9 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if(location!=null){
+                if (location != null) {
                     lastKnownLocation = location;
-                }else {
+                } else {
                     Log.e("FAIL IN", "getLocation");
                 }
             }
@@ -138,26 +143,28 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
     @Override
-    public boolean onOptionsItemSelected( MenuItem menuItem){
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
-        if(id == R.id.action_settings){
+        if (id == R.id.action_settings) {
             Intent intent = new Intent(allOfferActivity.this, SettingsActivity.class);
             startActivity(intent);
-            return  true;
+            return true;
         }
-    return true;
+        return true;
     }
 
     @Override
     public void onLocationChanged(Location location) {
 
     }
-    public void addOffer(View view){
+
+    public void addOffer(View view) {
         Intent intent = new Intent(allOfferActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
@@ -165,8 +172,8 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-            Offer offerDat = dataSnapshot.getValue(Offer.class);
-            Log.e("offer", String.valueOf(offerDat) + "  " + offerDat.getLat());
+        Offer offerDat = dataSnapshot.getValue(Offer.class);
+        Log.e("offer", String.valueOf(offerDat) + "  " + offerDat.getLat());
         //Brug valueAddedListener
 
 
@@ -175,7 +182,6 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         Location locationOfferDistanceToLocation = new Location("");
         locationOfferDistanceToLocation.setLatitude(lat);
         locationOfferDistanceToLocation.setLongitude(lng);
-
 
 
         Log.e("Location of event: ", locationOfferDistanceToLocation.getLatitude() + " lng: " + locationOfferDistanceToLocation.getLongitude());
@@ -187,18 +193,31 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         Log.e("OFFER LOCATION TO", String.valueOf(offerDat.getDistanceToLocation()));
         String prefDifString = sharedPreferences.getString("pref_distance", "500");
         Log.e("Preferences", prefDifString);
-        Log.e("Distance: ", locationDifference +"");
+        Log.e("Distance: ", locationDifference + "");
         float prefDif = Float.parseFloat(prefDifString);
         String prefType = sharedPreferences.getString("pref_type", "Everything");
         Log.e("pre", prefType);
         Log.e("TypeIsRight", String.valueOf(prefType.equals(OperationNames.everythingType)));
-        if(prefDif>locationDifference) {
-            if(prefType.equals(OperationNames.everythingType) || prefType.equals(offerDat.getType())){
-                list.add(offerDat);
-                Log.e("Add", "added");
-            }
-        }
 
+        String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+        String year = new SimpleDateFormat("yyyy").format(new Date());
+
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.GERMAN);
+        try {
+            Date dato = format.parse(offerDat.getDate() + "-" + year);
+            Date datoNu = format.parse(date);
+            int diff = (int) (datoNu.getTime() - dato.getTime());
+
+            //Checks if events are within preferences and within 7 days
+            if (prefDif > locationDifference && diff < 518400000) {
+                if (prefType.equals(OperationNames.everythingType) || prefType.equals(offerDat.getType())) {
+                    list.add(offerDat);
+                    Log.e("Add", "added");
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         Collections.sort(list);
@@ -243,7 +262,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     }
 
 
-    public void openMaps(View view){
+    public void openMaps(View view) {
         Intent intent = new Intent(allOfferActivity.this, MapsActivity.class);
         intent.putExtra("list", list);
         intent.putExtra("currentPosition", lastKnownLocation);

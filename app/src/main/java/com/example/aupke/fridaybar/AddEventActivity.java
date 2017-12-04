@@ -1,9 +1,13 @@
 package com.example.aupke.fridaybar;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -12,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class AddEventActivity extends AppCompatActivity {
+
+    private DatePickerDialog datePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +36,14 @@ public class AddEventActivity extends AppCompatActivity {
 
 
 
+
+
         String barString = "HardCoded bar";
         String titleString = title.getText().toString();
         String dateString = date.getText().toString();
         String descriptionString = description.getText().toString();
         String typeString = type.getSelectedItem().toString();
+
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute).push();
         Offer offer = new Offer(barString, titleString, descriptionString, typeString, dateString, 56.153553, 10.214211);
@@ -43,5 +52,7 @@ public class AddEventActivity extends AppCompatActivity {
         Intent intent = new Intent(AddEventActivity.this, allOfferActivity.class);
         startActivity(intent);
     }
+
+
 
 }
