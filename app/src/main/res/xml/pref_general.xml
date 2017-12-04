@@ -5,7 +5,7 @@
     <EditTextPreference
         android:capitalize="words"
         android:defaultValue="@string/distance_defaultvalue"
-        android:key="example_text"
+        android:key="pref_distance"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:numeric="integer"
@@ -21,7 +21,7 @@
         android:defaultValue="Everything"
         android:entries="@array/prefered_type_titles"
         android:entryValues="@array/pref_example_list_values"
-        android:key="example_list"
+        android:key="pref_type"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/prefered_type" />

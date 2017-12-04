@@ -19,6 +19,7 @@ public class Offer implements Serializable {
     private String date;
     private double lat;
     private double lng;
+    private String type;
 
     public Offer(String distanceToLocation, String title, String description) {
         this.distanceToLocation = distanceToLocation;
@@ -37,7 +38,8 @@ public class Offer implements Serializable {
 
     }
 
-    public Offer(String bar, String title, String description, String date, double lat, double lng) {
+    public Offer(String bar, String title, String description, String type, String date, double lat, double lng) {
+        this.type = type;
         this.bar = bar;
         this.title = title;
         this.description = description;
@@ -101,5 +103,13 @@ public class Offer implements Serializable {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

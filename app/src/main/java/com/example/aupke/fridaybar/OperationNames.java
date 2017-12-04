@@ -16,4 +16,8 @@ public class OperationNames {
     public static String datBarRoute = "Datbar";
     public static String eventRoute = "Events";
     public static String offer = "offer";
+    public static String beerType = "Beer";
+    public static String drinksType  = "Drinks";
+    public static String shotsType = "Shots";
+    public static String everythingType = "Everything";
 }

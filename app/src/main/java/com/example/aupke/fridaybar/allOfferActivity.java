@@ -171,8 +171,6 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         Location locationOfferDistanceToLocation = new Location("");
         locationOfferDistanceToLocation.setLatitude(lat);
         locationOfferDistanceToLocation.setLongitude(lng);
-        String offerTitle = offerDat.getTitle();
-        String offerDescription = offerDat.getDescription();
 
 
 
@@ -183,12 +181,18 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         String offerDistanceToLocation = String.valueOf(locationDifference);
         offerDat.setDistanceToLocation(offerDistanceToLocation);
         Log.e("OFFER LOCATION TO", offerDat.getDistanceToLocation());
-        String prefDifString = sharedPreferences.getString("example_text", "500");
+        String prefDifString = sharedPreferences.getString("pref_distance", "500");
         Log.e("Preferences", prefDifString);
         Log.e("Distance: ", locationDifference +"");
         float prefDif = Float.parseFloat(prefDifString);
+        String prefType = sharedPreferences.getString("pref_type", "Everything");
+        Log.e("pre", prefType);
+        Log.e("TypeIsRight", String.valueOf(prefType.equals(OperationNames.everythingType)));
         if(prefDif>locationDifference) {
-            list.add(offerDat);
+            if(prefType.equals(OperationNames.everythingType)){
+                list.add(offerDat);
+                Log.e("Add", "added");
+            }
         }
 
         adapter.notifyDataSetChanged();

@@ -66,6 +66,13 @@
         <item>Entry 3</item>
     </string-array>
 
+    <string-array name="array_type">
+        <item>Everything</item>
+        <item>Beer</item>
+        <item>Shots</item>
+        <item>Drinks</item>
+    </string-array>
+
     <string-array name="list_preference_entry_values">
         <item>1</item>
         <item>2</item>
