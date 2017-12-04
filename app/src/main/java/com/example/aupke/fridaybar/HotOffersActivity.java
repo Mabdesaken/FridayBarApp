@@ -26,7 +26,7 @@ public class HotOffersActivity extends AppCompatActivity {
                     startActivity(intent);
                     return true;
                 case R.id.navigation_offers:
-                    intent = new Intent(HotOffersActivity.this, Main2Activity.class);
+                    intent = new Intent(HotOffersActivity.this, allOfferActivity.class);
                     startActivity(intent);
                     return true;
                 case R.id.navigation_favorites:

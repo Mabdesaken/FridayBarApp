@@ -22,7 +22,7 @@
         <activity android:name=".AddEventActivity" />
         <activity android:name=".itemSelectedActivity" />
         <activity
-            android:name=".Main2Activity"
+            android:name=".allOfferActivity"
             android:label="@string/title_activity_main2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,10 +38,10 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".Main2Activity">
+            android:parentActivityName=".allOfferActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.aupke.fridaybar.Main2Activity" />
+                android:value="com.example.aupke.fridaybar.allOfferActivity" />
         </activity>
     </application>
 

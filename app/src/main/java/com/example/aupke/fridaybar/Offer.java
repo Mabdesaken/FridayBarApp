@@ -4,23 +4,46 @@ import android.location.Location;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
+
 /**
  * Created by Aupke on 30-11-2017.
  */
 
 @IgnoreExtraProperties
-public class Offer {
+public class Offer implements Serializable {
+    private String bar;
     private String distanceToLocation;
     private String title;
     private String description;
+    private String date;
+    private double lat;
+    private double lng;
 
     public Offer(String distanceToLocation, String title, String description) {
         this.distanceToLocation = distanceToLocation;
         this.title = title;
         this.description = description;
     }
+
+    public Offer(String bar, String date, String title, String description){
+        this.date = date;
+        this.title = title;
+        this.description = description;
+        this.bar = bar;
+    }
+
     public Offer(){
 
+    }
+
+    public Offer(String bar, String title, String description, String date, double lat, double lng) {
+        this.bar = bar;
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public String getDistanceToLocation() {
@@ -45,5 +68,38 @@ public class Offer {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getBar() {
+        return bar;
+    }
+
+    public void setBar(String bar) {
+        this.bar = bar;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

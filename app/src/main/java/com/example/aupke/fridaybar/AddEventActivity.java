@@ -25,13 +25,14 @@ public class AddEventActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.addEventTitel);
         TextView date = findViewById(R.id.addEventDate);
         TextView description = findViewById(R.id.addEventDescription);
+        String barString = "HardCoded bar";
         String titleString = title.getText().toString();
         String dateString = date.getText().toString();
         String descriptionString = description.getText().toString();
 
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Datbar").push();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute).push();
 
-        Offer offer = new Offer(descriptionString, descriptionString, descriptionString);
+        Offer offer = new Offer(barString, titleString, descriptionString, dateString, 56.153553, 10.214211);
         mDatabase.setValue(offer);
 
         Intent intent = new Intent(AddEventActivity.this, MainActivity.class);

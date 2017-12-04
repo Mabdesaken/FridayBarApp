@@ -1,11 +1,9 @@
 package com.example.aupke.fridaybar;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -16,13 +14,10 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
@@ -36,7 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class Main2Activity extends AppCompatActivity implements LocationListener {
+public class allOfferActivity extends AppCompatActivity implements LocationListener, ChildEventListener, AdapterView.OnItemClickListener {
 
     DatabaseReference dref;
     ListView listview;
@@ -55,15 +50,15 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_featured:
-                    Intent intent = new Intent(Main2Activity.this, HotOffersActivity.class);
+                    Intent intent = new Intent(allOfferActivity.this, HotOffersActivity.class);
                     startActivity(intent);
                     return true;
                 case R.id.navigation_offers:
-                    intent = new Intent(Main2Activity.this, Main2Activity.class);
+                    intent = new Intent(allOfferActivity.this, allOfferActivity.class);
                     startActivity(intent);
                     return true;
                 case R.id.navigation_favorites:
-                    intent = new Intent(Main2Activity.this, FavoritesActivity.class);
+                    intent = new Intent(allOfferActivity.this, FavoritesActivity.class);
                     startActivity(intent);
                     return true;
             }
@@ -77,7 +72,7 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.all_offers_activity);
 
          sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -98,83 +93,21 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         listview=(ListView)findViewById(R.id.listView);
         adapter=new OfferAdapter(this, list);
         listview.setAdapter(adapter);
-        dref= FirebaseDatabase.getInstance().getReference().child("Events");
+        dref= FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
 
-        dref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                String string = dataSnapshot.getValue(String.class);
+        listview.setOnItemClickListener(this);
+    }
 
-                double lat = (double) dataSnapshot.child("Lat").getValue();
-                double lng = (double) dataSnapshot.child("Lng").getValue();
-                Location locationOfferDistanceToLocation = new Location("");
-                locationOfferDistanceToLocation.setLatitude(lat);
-                locationOfferDistanceToLocation.setLongitude(lng);
-                String offerTitle = String.valueOf(dataSnapshot.child("Title").getValue());
-                String offerDescription = String.valueOf(dataSnapshot.child("Description").getValue());
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dref.addChildEventListener(this);
+    }
 
-
-
-                Log.e("Location of event: ", locationOfferDistanceToLocation.getLatitude() + " lng: " + locationOfferDistanceToLocation.getLongitude());
-                Log.e("Location of device: ", lastKnownLocation.getLatitude() + " lng: " + lastKnownLocation.getLongitude());
-
-                int locationDifference = (int) locationOfferDistanceToLocation.distanceTo(lastKnownLocation);
-                String offerDistanceToLocation = String.valueOf(locationDifference);
-                Offer offer = new Offer(offerDistanceToLocation, offerTitle, offerDescription);
-                Log.e("OFFER LOCATION TO", offer.getDistanceToLocation());
-                String prefDifString = sharedPreferences.getString("example_text", "500");
-                Log.e("Preferences", prefDifString);
-                Log.e("Distance: ", locationDifference +"");
-                float prefDif = Float.parseFloat(prefDifString);
-                if(prefDif>locationDifference) {
-                    list.add(offer);
-                }
-
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                list.remove(dataSnapshot.getValue(String.class));
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-
-                Offer item = (Offer) adapter.getItemAtPosition(position);
-                String itdes = item.getDescription();
-                Log.e("D", itdes);
-
-                Intent intent = new Intent(Main2Activity.this, itemSelectedActivity.class);
-                intent.putExtra("Title", item.getTitle());
-                intent.putExtra("Description", item.getDescription());
-                intent.putExtra("Distance", item.getDistanceToLocation());
-
-                //based on item add info to intent
-                startActivity(intent);
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dref.removeEventListener(this);
     }
 
     private void getLocation() {
@@ -182,7 +115,7 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
         String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.e(descriptionString, "Permissions not granted");
-            ActivityCompat.requestPermissions(Main2Activity.this, perms, 1);
+            ActivityCompat.requestPermissions(allOfferActivity.this, perms, 1);
             return;
         }
         Log.e(descriptionString, "Succes: Permissions Granted");
@@ -208,7 +141,7 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
     public boolean onOptionsItemSelected( MenuItem menuItem){
         int id = menuItem.getItemId();
         if(id == R.id.action_settings){
-            Intent intent = new Intent(Main2Activity.this, SettingsActivity.class);
+            Intent intent = new Intent(allOfferActivity.this, SettingsActivity.class);
             startActivity(intent);
             return  true;
         }
@@ -220,7 +153,79 @@ public class Main2Activity extends AppCompatActivity implements LocationListener
 
     }
     public void addOffer(View view){
-        Intent intent = new Intent(Main2Activity.this, AddEventActivity.class);
+        Intent intent = new Intent(allOfferActivity.this, AddEventActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            Offer offerDat = dataSnapshot.getValue(Offer.class);
+            Log.e("offer", String.valueOf(offerDat) + "  " + offerDat.getLat());
+        //Brug valueAddedListener
+
+
+        double lat = (double) offerDat.getLat();
+        double lng = (double) offerDat.getLng();
+        Location locationOfferDistanceToLocation = new Location("");
+        locationOfferDistanceToLocation.setLatitude(lat);
+        locationOfferDistanceToLocation.setLongitude(lng);
+        String offerTitle = offerDat.getTitle();
+        String offerDescription = offerDat.getDescription();
+
+
+
+        Log.e("Location of event: ", locationOfferDistanceToLocation.getLatitude() + " lng: " + locationOfferDistanceToLocation.getLongitude());
+        Log.e("Location of device: ", lastKnownLocation.getLatitude() + " lng: " + lastKnownLocation.getLongitude());
+
+        int locationDifference = (int) locationOfferDistanceToLocation.distanceTo(lastKnownLocation);
+        String offerDistanceToLocation = String.valueOf(locationDifference);
+        offerDat.setDistanceToLocation(offerDistanceToLocation);
+        Log.e("OFFER LOCATION TO", offerDat.getDistanceToLocation());
+        String prefDifString = sharedPreferences.getString("example_text", "500");
+        Log.e("Preferences", prefDifString);
+        Log.e("Distance: ", locationDifference +"");
+        float prefDif = Float.parseFloat(prefDifString);
+        if(prefDif>locationDifference) {
+            list.add(offerDat);
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override
+    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+    }
+
+    @Override
+    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        Offer offer = list.get(position);
+        String itdes = offer.getDescription();
+        Log.e("D", itdes);
+
+        Intent intent = new Intent(allOfferActivity.this, itemSelectedActivity.class);
+
+        intent.putExtra(OperationNames.offer, offer);
+
+
+        //based on offer add info to intent
         startActivity(intent);
     }
 }
