@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,11 +14,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
 
@@ -44,13 +46,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setOnInfoWindowClickListener(this);
+        ArrayList<Offer> offerArrayList = (ArrayList<Offer>) getIntent().getExtras().get("list");
         Intent intent = getIntent();
-        ArrayList<LatLng> latLngArrayList = (ArrayList<LatLng>) intent.getExtras().get("latlng");
-        for(int i= 0; i<latLngArrayList.size(); i++){
-            LatLng position = latLngArrayList.get(i);
-            googleMap.addMarker(new MarkerOptions().position(position).title("Bar"));
+
+        for(int i= 0; i<offerArrayList.size(); i++){
+            LatLng position = new LatLng(offerArrayList.get(i).getLat(), offerArrayList.get(i).getLng());
+            googleMap.addMarker(new MarkerOptions().position(position).title("Bar")
+            .snippet(offerArrayList.get(i).getDescription()));
         }
+
         Location location = (Location) intent.getExtras().get("currentPosition");
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(new LatLng(location.getLatitude(), location.getLongitude()));
@@ -60,5 +65,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f ));
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(this, "Info window clicked",
+                Toast.LENGTH_SHORT).show();
     }
 }

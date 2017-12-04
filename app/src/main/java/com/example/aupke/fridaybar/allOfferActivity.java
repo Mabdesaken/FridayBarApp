@@ -245,14 +245,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
 
     public void openMaps(View view){
         Intent intent = new Intent(allOfferActivity.this, MapsActivity.class);
-        ArrayList<LatLng> locationList = new ArrayList<>();
-        for ( Offer item : list){
-            LatLng latlng = new LatLng(item.getLat(), item.getLng());
-            locationList.add(latlng);
-        }
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("latlnglist", locationList);
-        intent.putExtra("latlng", locationList);
+        intent.putExtra("list", list);
         intent.putExtra("currentPosition", lastKnownLocation);
         startActivity(intent);
     }
