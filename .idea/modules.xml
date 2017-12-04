@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FridayBar.iml" filepath="$PROJECT_DIR$/FridayBar.iml" />
+      <module fileurl="file://C:\Users\Mabdesaken\StudioProjects\FridayBarApp\FridayBar.iml" filepath="C:\Users\Mabdesaken\StudioProjects\FridayBarApp\FridayBar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FridayBarApp.iml" filepath="$PROJECT_DIR$/.idea/FridayBarApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

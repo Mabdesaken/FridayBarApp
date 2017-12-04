@@ -41,12 +41,14 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorites);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
+
+        mTextMessage = (TextView) findViewById(R.id.message);
+        mTextMessage.setText(getIntent().getStringExtra(OperationNames.offer));
     }
 
 }

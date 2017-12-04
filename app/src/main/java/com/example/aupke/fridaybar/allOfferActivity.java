@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,10 +15,13 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
@@ -50,7 +54,6 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     private String descriptionString = "Debug";
     private TextView mTextMessage;
 
-
     private FusedLocationProviderClient mFusedLocationClient;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -75,6 +78,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
             return false;
         }
     };
+
     private Location lastKnownLocation;
     private SharedPreferences sharedPreferences;
 
@@ -88,6 +92,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
 
         getLocation();
 
+
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -95,14 +100,11 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
 
-        //gestureDetector
-        final GestureDoubleTap gestureDoubleTap = new GestureDoubleTap();
-        GestureDetector gd = new GestureDetector(this, gestureDoubleTap);
-
-        listview = (ListView) findViewById(R.id.listView);
-        adapter = new OfferAdapter(this, list);
+        listview=(ListView)findViewById(R.id.listView);
+        adapter=new OfferAdapter(this, list);
         listview.setAdapter(adapter);
-        dref = FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
+
+        dref= FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
 
         listview.setOnItemClickListener(this);
     }
@@ -163,8 +165,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     public void onLocationChanged(Location location) {
 
     }
-
-    public void addOffer(View view) {
+    public void addOffer(View view){
         Intent intent = new Intent(allOfferActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
@@ -182,6 +183,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         Location locationOfferDistanceToLocation = new Location("");
         locationOfferDistanceToLocation.setLatitude(lat);
         locationOfferDistanceToLocation.setLongitude(lng);
+
 
 
         Log.e("Location of event: ", locationOfferDistanceToLocation.getLatitude() + " lng: " + locationOfferDistanceToLocation.getLongitude());
@@ -245,19 +247,60 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
 
     }
 
+    private boolean nonDoubleClick = true;
+    private long firstClickTime = 0L;
+    private final int DOUBLE_CLICK_TIMEOUT = 200;
+
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
+        synchronized(this) {
+            if(firstClickTime == 0) {
+                firstClickTime = SystemClock.elapsedRealtime();
+                nonDoubleClick = true;
+            } else {
+                long deltaTime = SystemClock.elapsedRealtime() - firstClickTime;
+                firstClickTime = 0;
+                if(deltaTime < DOUBLE_CLICK_TIMEOUT) {
+                    nonDoubleClick = false;
+                    this.onItemDoubleClick(parent, view, position, id);
+                    return;
+                }
+            }
+
+            view.postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    if(nonDoubleClick) {
+                        // logic for single click event
+                        Offer offer = list.get(position);
+                        String itdes = offer.getDescription();
+                        Log.e("D", itdes);
+
+                        Intent intent = new Intent(allOfferActivity.this, itemSelectedActivity.class);
+
+                        intent.putExtra(OperationNames.offer, offer);
+
+
+                        //based on offer add info to intent
+                        startActivity(intent);
+                    }
+                }
+
+            }, DOUBLE_CLICK_TIMEOUT);
+        }
+    }
+
+    private void onItemDoubleClick(AdapterView<?> parent, View view, int position, long id) {
+        //logic for double tap event
         Offer offer = list.get(position);
-        String itdes = offer.getDescription();
-        Log.e("D", itdes);
+        String titelForTxtView = offer.getTitle();
+        Log.e("D", titelForTxtView);
 
-        Intent intent = new Intent(allOfferActivity.this, itemSelectedActivity.class);
+        Intent intent = new Intent(allOfferActivity.this, FavoritesActivity.class);
+        intent.putExtra(OperationNames.offer, titelForTxtView);
 
-        intent.putExtra(OperationNames.offer, offer);
-
-
-        //based on offer add info to intent
         startActivity(intent);
     }
 
