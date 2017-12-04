@@ -189,7 +189,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         Log.e("pre", prefType);
         Log.e("TypeIsRight", String.valueOf(prefType.equals(OperationNames.everythingType)));
         if(prefDif>locationDifference) {
-            if(prefType.equals(OperationNames.everythingType)){
+            if(prefType.equals(OperationNames.everythingType) || prefType.equals(offerDat.getType())){
                 list.add(offerDat);
                 Log.e("Add", "added");
             }
