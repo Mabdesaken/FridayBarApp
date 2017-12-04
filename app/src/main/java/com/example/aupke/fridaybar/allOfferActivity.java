@@ -53,6 +53,9 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     OfferAdapter adapter;
     private String descriptionString = "Debug";
     private TextView mTextMessage;
+    private boolean nonDoubleClick = true;
+    private long firstClickTime = 0L;
+    private final int DOUBLE_CLICK_TIMEOUT = 200;
 
     private FusedLocationProviderClient mFusedLocationClient;
 
@@ -246,10 +249,6 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     public void onCancelled(DatabaseError databaseError) {
 
     }
-
-    private boolean nonDoubleClick = true;
-    private long firstClickTime = 0L;
-    private final int DOUBLE_CLICK_TIMEOUT = 200;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
