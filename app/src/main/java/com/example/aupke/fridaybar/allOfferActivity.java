@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -231,6 +232,21 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
 
 
         //based on offer add info to intent
+        startActivity(intent);
+    }
+
+
+    public void openMaps(View view){
+        Intent intent = new Intent(allOfferActivity.this, MapsActivity.class);
+        ArrayList<LatLng> locationList = new ArrayList<>();
+        for ( Offer item : list){
+            LatLng latlng = new LatLng(item.getLat(), item.getLng());
+            locationList.add(latlng);
+        }
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("latlnglist", locationList);
+        intent.putExtra("latlng", locationList);
+        intent.putExtra("currentPosition", lastKnownLocation);
         startActivity(intent);
     }
 }

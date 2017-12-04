@@ -44,5 +44,4 @@ public class AddEventActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
 }
