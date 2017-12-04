@@ -101,6 +101,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     @Override
     protected void onResume() {
         super.onResume();
+        list.clear();
         dref.addChildEventListener(this);
     }
 
