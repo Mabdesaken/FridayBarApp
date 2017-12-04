@@ -31,6 +31,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class allOfferActivity extends AppCompatActivity implements LocationListener, ChildEventListener, AdapterView.OnItemClickListener {
 
@@ -180,8 +183,8 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
 
         int locationDifference = (int) locationOfferDistanceToLocation.distanceTo(lastKnownLocation);
         String offerDistanceToLocation = String.valueOf(locationDifference);
-        offerDat.setDistanceToLocation(offerDistanceToLocation);
-        Log.e("OFFER LOCATION TO", offerDat.getDistanceToLocation());
+        offerDat.setDistanceToLocation(locationDifference);
+        Log.e("OFFER LOCATION TO", String.valueOf(offerDat.getDistanceToLocation()));
         String prefDifString = sharedPreferences.getString("pref_distance", "500");
         Log.e("Preferences", prefDifString);
         Log.e("Distance: ", locationDifference +"");
@@ -195,6 +198,10 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
                 Log.e("Add", "added");
             }
         }
+
+
+
+        Collections.sort(list);
 
         adapter.notifyDataSetChanged();
     }

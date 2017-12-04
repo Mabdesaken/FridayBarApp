@@ -1,6 +1,6 @@
 package com.example.aupke.fridaybar;
 
-import android.location.Location;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -11,9 +11,9 @@ import java.io.Serializable;
  */
 
 @IgnoreExtraProperties
-public class Offer implements Serializable {
+public class Offer implements Serializable, Comparable<Offer> {
     private String bar;
-    private String distanceToLocation;
+    private int distanceToLocation;
     private String title;
     private String description;
     private String date;
@@ -21,7 +21,7 @@ public class Offer implements Serializable {
     private double lng;
     private String type;
 
-    public Offer(String distanceToLocation, String title, String description) {
+    public Offer(int distanceToLocation, String title, String description) {
         this.distanceToLocation = distanceToLocation;
         this.title = title;
         this.description = description;
@@ -48,11 +48,11 @@ public class Offer implements Serializable {
         this.lng = lng;
     }
 
-    public String getDistanceToLocation() {
+    public int getDistanceToLocation() {
         return distanceToLocation;
     }
 
-    public void setDistanceToLocation(String distanceToLocation) {
+    public void setDistanceToLocation(int distanceToLocation) {
         this.distanceToLocation = distanceToLocation;
     }
 
@@ -111,5 +111,11 @@ public class Offer implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public int compareTo(@NonNull Offer o) {
+
+        return distanceToLocation-o.distanceToLocation;
     }
 }
