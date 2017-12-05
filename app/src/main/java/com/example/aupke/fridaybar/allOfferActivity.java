@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -45,11 +46,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
+import es.dmoral.toasty.Toasty;
+
 public class allOfferActivity extends AppCompatActivity implements LocationListener, ChildEventListener, AdapterView.OnItemClickListener {
 
     DatabaseReference dref;
     ListView listview;
     ArrayList<Offer> list = new ArrayList<>();
+    ArrayList<Offer> favorites = new ArrayList<>();
     OfferAdapter adapter;
     private String descriptionString = "Debug";
     private TextView mTextMessage;
@@ -294,13 +298,14 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     private void onItemDoubleClick(AdapterView<?> parent, View view, int position, long id) {
         //logic for double tap event
         Offer offer = list.get(position);
-        String titelForTxtView = offer.getTitle();
-        Log.e("D", titelForTxtView);
+        favorites.add(offer);
+        Log.e("D", "Offer: " + favorites.get(0).getTitle() + " has been added to favorites list");
 
         Intent intent = new Intent(allOfferActivity.this, FavoritesActivity.class);
-        intent.putExtra(OperationNames.offer, titelForTxtView);
+        intent.putExtra(OperationNames.offer, favorites);
 
-        startActivity(intent);
+        Toasty.normal(getApplicationContext(), "",
+                Toast.LENGTH_SHORT, ContextCompat.getDrawable(this, R.drawable.heart_icon)).show();
     }
 
 

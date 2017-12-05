@@ -7,11 +7,18 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class FavoritesActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
+    private ListView listView;
+    private OfferAdapter adapter;
+    private Intent intent = getIntent();
+    private ArrayList<Offer> offerArrayList = (ArrayList<Offer>) intent.getExtras().get(OperationNames.offer);
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -41,14 +48,18 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorites);
 
+        //BottomNavigationBar
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        mTextMessage.setText(getIntent().getStringExtra(OperationNames.offer));
+        //listview
+        listView=(ListView)findViewById(R.id.favoritesView);
+        adapter = new OfferAdapter(this, offerArrayList);
+        listView.setAdapter(adapter);
+
     }
 
 }
