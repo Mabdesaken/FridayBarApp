@@ -20,4 +20,5 @@ public class OperationNames {
     public static String drinksType  = "Drinks";
     public static String shotsType = "Shots";
     public static String everythingType = "Everything";
+    public static String location = "location";
 }

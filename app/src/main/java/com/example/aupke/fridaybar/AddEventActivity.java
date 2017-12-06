@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ public class AddEventActivity extends AppCompatActivity {
         TextView date = findViewById(R.id.addEventDate);
         TextView description = findViewById(R.id.addEventDescription);
         Spinner type = findViewById(R.id.addType);
-
+        CheckBox exclusive = findViewById(R.id.exclusiveCheckBox);
 
 
 
@@ -43,11 +44,14 @@ public class AddEventActivity extends AppCompatActivity {
         String dateString = date.getText().toString();
         String descriptionString = description.getText().toString();
         String typeString = type.getSelectedItem().toString();
+        boolean checkBoolean = exclusive.isChecked();
 
 
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute).push();
-        Offer offer = new Offer(barString, titleString, descriptionString, typeString, dateString, 56.153553, 10.214211);
+        Offer offer = new Offer(barString, titleString, descriptionString, typeString, dateString, 56.153553, 10.214211, checkBoolean);
+        Offer offer1 = new Offer(barString,dateString,titleString,descriptionString);
         mDatabase.setValue(offer);
+        mDatabase.setValue(offer1);
 
         Intent intent = new Intent(AddEventActivity.this, allOfferActivity.class);
         startActivity(intent);

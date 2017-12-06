@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
+    private ArrayList<Offer> offerArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnInfoWindowClickListener(this);
-        ArrayList<Offer> offerArrayList = (ArrayList<Offer>) getIntent().getExtras().get("list");
+        offerArrayList = (ArrayList<Offer>) getIntent().getExtras().get("list");
+        Log.e("ListMaps", String.valueOf(offerArrayList));
         Intent intent = getIntent();
 
         for(int i= 0; i<offerArrayList.size(); i++){

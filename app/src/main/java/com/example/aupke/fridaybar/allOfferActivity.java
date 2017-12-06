@@ -72,14 +72,19 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
                 case R.id.navigation_featured:
                     Intent intent = new Intent(allOfferActivity.this, HotOffersActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_offers:
                     intent = new Intent(allOfferActivity.this, allOfferActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_favorites:
                     intent = new Intent(allOfferActivity.this, FavoritesActivity.class);
+                    intent.putExtra(OperationNames.offer, favorites);
+                    Log.e("ListFirst", String.valueOf(favorites));
                     startActivity(intent);
+                    overridePendingTransition(0,0);
                     return true;
             }
             return false;
@@ -197,9 +202,9 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         Log.e("Location of device: ", lastKnownLocation.getLatitude() + " lng: " + lastKnownLocation.getLongitude());
 
         int locationDifference = (int) locationOfferDistanceToLocation.distanceTo(lastKnownLocation);
-        String offerDistanceToLocation = String.valueOf(locationDifference);
+        //String offerDistanceToLocation = String.valueOf(locationDifference);
         offerDat.setDistanceToLocation(locationDifference);
-        Log.e("OFFER LOCATION TO", String.valueOf(offerDat.getDistanceToLocation()));
+        //Log.e("OFFER LOCATION TO", String.valueOf(offerDat.getDistanceToLocation()));
         String prefDifString = sharedPreferences.getString("pref_distance", "500");
         Log.e("Preferences", prefDifString);
         Log.e("Distance: ", locationDifference + "");
@@ -298,11 +303,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
     private void onItemDoubleClick(AdapterView<?> parent, View view, int position, long id) {
         //logic for double tap event
         Offer offer = list.get(position);
-        favorites.add(offer);
-        Log.e("D", "Offer: " + favorites.get(0).getTitle() + " has been added to favorites list");
-
-        Intent intent = new Intent(allOfferActivity.this, FavoritesActivity.class);
-        intent.putExtra(OperationNames.offer, favorites);
+        OfferManager.addOffer(offer, this);
 
         Toasty.normal(getApplicationContext(), "",
                 Toast.LENGTH_SHORT, ContextCompat.getDrawable(this, R.drawable.heart_icon)).show();

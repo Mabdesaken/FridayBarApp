@@ -75,4 +75,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addEventDescription" />
 
+
+    <CheckBox
+        android:id="@+id/exclusiveCheckBox"
+        android:layout_width="214dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Exclusive"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addType" />
+
 </android.support.constraint.ConstraintLayout>

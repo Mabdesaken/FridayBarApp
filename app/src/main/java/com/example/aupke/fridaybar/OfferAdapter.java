@@ -1,6 +1,7 @@
 package com.example.aupke.fridaybar;
 
 import android.content.Context;
+import android.location.Location;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,10 +62,13 @@ public class OfferAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+
         viewHolder.locationView.setText( offerList.get(position).getDistanceToLocation() + "m");
         viewHolder.titleView.setText(offerList.get(position).getTitle());
         viewHolder.descriptionView.setText(offerList.get(position).getDescription());
 
         return convertView;
     }
+
+
 }
