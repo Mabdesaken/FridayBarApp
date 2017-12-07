@@ -31,7 +31,7 @@
             android:name=".FavoritesActivity"
             android:label="@string/title_activity_favorites" />
         <activity
-            android:name=".HotOffersActivity"
+            android:name=".FeaturedActivity"
             android:label="@string/title_activity_hot_offers" />
         <activity
             android:name=".SettingsActivity"

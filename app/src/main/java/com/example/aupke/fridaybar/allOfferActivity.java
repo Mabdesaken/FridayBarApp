@@ -11,14 +11,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -39,16 +36,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 
-public class allOfferActivity extends AppCompatActivity implements LocationListener, ChildEventListener, AdapterView.OnItemClickListener {
+public class allOfferActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, LocationListener, ChildEventListener, AdapterView.OnItemClickListener{
 
     DatabaseReference dref;
     ListView listview;
@@ -70,7 +64,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_featured:
-                    Intent intent = new Intent(allOfferActivity.this, HotOffersActivity.class);
+                    Intent intent = new Intent(allOfferActivity.this, FeaturedActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
@@ -93,6 +87,7 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
 
     private Location lastKnownLocation;
     private SharedPreferences sharedPreferences;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     //oncreate
     @Override
@@ -111,7 +106,8 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
-
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
         listview=(ListView)findViewById(R.id.listView);
         adapter=new OfferAdapter(this, list);
         listview.setAdapter(adapter);
@@ -119,6 +115,18 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         dref= FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
 
         listview.setOnItemClickListener(this);
+        listview.setOnTouchListener(new OnSwipeTouchListener(this){
+            @Override
+            public void onSwipeLeft() {
+                super.onSwipeLeft();
+                Intent intent = new Intent(allOfferActivity.this, MapsActivity.class);
+                intent.putExtra("list", list);
+                intent.putExtra("currentPosition", lastKnownLocation);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     @Override
@@ -315,5 +323,13 @@ public class allOfferActivity extends AppCompatActivity implements LocationListe
         intent.putExtra("list", list);
         intent.putExtra("currentPosition", lastKnownLocation);
         startActivity(intent);
+    }
+
+    @Override
+    public void onRefresh() {
+        finish();
+        startActivity(getIntent());
+        swipeRefreshLayout.setRefreshing(false);
+        overridePendingTransition(0,0);
     }
 }

@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class HotOffersActivity extends AppCompatActivity implements ChildEventListener {
+public class FeaturedActivity extends AppCompatActivity implements ChildEventListener {
 
     private TextView mTextMessage;
 
@@ -32,17 +32,17 @@ public class HotOffersActivity extends AppCompatActivity implements ChildEventLi
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_featured:
-                    Intent intent = new Intent(HotOffersActivity.this, HotOffersActivity.class);
+                    Intent intent = new Intent(FeaturedActivity.this, FeaturedActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_offers:
-                    intent = new Intent(HotOffersActivity.this, allOfferActivity.class);
+                    intent = new Intent(FeaturedActivity.this, allOfferActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_favorites:
-                    intent = new Intent(HotOffersActivity.this, FavoritesActivity.class);
+                    intent = new Intent(FeaturedActivity.this, FavoritesActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
@@ -58,7 +58,7 @@ public class HotOffersActivity extends AppCompatActivity implements ChildEventLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.hotoffers);
+        setContentView(R.layout.activity_featured);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);

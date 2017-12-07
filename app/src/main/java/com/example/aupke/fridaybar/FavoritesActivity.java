@@ -1,22 +1,16 @@
 package com.example.aupke.fridaybar;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class FavoritesActivity extends AppCompatActivity implements FavoritesOfferAdapter.OnDeleteButtonListener {
 
@@ -31,7 +25,7 @@ public class FavoritesActivity extends AppCompatActivity implements FavoritesOff
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_featured:
-                    Intent intent = new Intent(FavoritesActivity.this, HotOffersActivity.class);
+                    Intent intent = new Intent(FavoritesActivity.this, FeaturedActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
