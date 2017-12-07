@@ -54,8 +54,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for(int i= 0; i<offerArrayList.size(); i++){
             LatLng position = new LatLng(offerArrayList.get(i).getLat(), offerArrayList.get(i).getLng());
-            googleMap.addMarker(new MarkerOptions().position(position).title("Bar")
-            .snippet(offerArrayList.get(i).getDescription()));
+            googleMap.addMarker(new MarkerOptions().position(position).title(offerArrayList.get(i).getBar())
+            .snippet(offerArrayList.get(i).getTitle()));
         }
 
         Location location = (Location) intent.getExtras().get("currentPosition");

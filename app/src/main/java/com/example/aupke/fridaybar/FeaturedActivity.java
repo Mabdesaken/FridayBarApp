@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class FeaturedActivity extends AppCompatActivity implements ChildEventListener {
+public class FeaturedActivity extends AppCompatActivity implements ChildEventListener, AdapterView.OnItemClickListener {
 
     private TextView mTextMessage;
 
@@ -72,6 +74,7 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
         listView=(ListView)findViewById(R.id.featuredView);;
         adapter = new FeaturedOfferAdapter(this, featuredList);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
 
         dref= FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
     }
@@ -118,5 +121,17 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
     protected void onPause() {
         super.onPause();
         dref.removeEventListener(this);
+    }
+
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Log.e("Adapter", "open");
+        Offer offer = featuredList.get(i);
+        Intent intent = new Intent(FeaturedActivity.this, itemSelectedActivity.class);
+        intent.putExtra(OperationNames.offer,offer);
+        startActivity(intent);
+        overridePendingTransition(0,0);
     }
 }

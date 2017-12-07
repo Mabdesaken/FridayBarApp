@@ -41,6 +41,7 @@ class FeaturedOfferAdapter extends BaseAdapter {
     private class ViewHolder{
         public TextView titleView;
         public TextView descriptionView;
+        public TextView barView;
     }
 
     @Override
@@ -50,8 +51,9 @@ class FeaturedOfferAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.featured_list_view, null);
-            viewHolder.titleView = convertView.findViewById(R.id.ho_title);
-            viewHolder.descriptionView = convertView.findViewById(R.id.ho_description);
+            viewHolder.barView = convertView.findViewById(R.id.fea_bar);
+            viewHolder.titleView = convertView.findViewById(R.id.fea_title);
+            viewHolder.descriptionView = convertView.findViewById(R.id.fea_description);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
@@ -59,6 +61,7 @@ class FeaturedOfferAdapter extends BaseAdapter {
 
         viewHolder.titleView.setText(offerList.get(i).getTitle());
         viewHolder.descriptionView.setText(offerList.get(i).getDescription());
+        viewHolder.barView.setText(offerList.get(i).getBar());
 
         return convertView;
     }

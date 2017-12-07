@@ -31,6 +31,8 @@ public class itemSelectedActivity extends AppCompatActivity {
 
     }
 
+
+
     public void goBack(View view){
         Intent intent = new Intent(itemSelectedActivity.this, allOfferActivity.class);
         startActivity(intent);
