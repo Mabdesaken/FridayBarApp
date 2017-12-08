@@ -100,9 +100,7 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
         Offer offer = dataSnapshot.getValue(Offer.class);
-        Log.e("CHILDADDED", String.valueOf(offer));
         if(offer.isChecked()) {
-            Log.e("CHECKED", "TRUE");
             featuredList.add(offer);
         }
         adapter.notifyDataSetChanged();
@@ -145,8 +143,6 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.e("Adapter", "open");
-        Log.e("Location", String.valueOf(lastKnownLocation));
         Offer offer = featuredList.get(i);
         //Distance to Location calculation
         Location offerLocation = new Location("");

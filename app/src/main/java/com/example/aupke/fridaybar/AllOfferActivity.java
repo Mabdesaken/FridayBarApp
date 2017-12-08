@@ -78,7 +78,6 @@ public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshL
                 case R.id.navigation_favorites:
                     intent = new Intent(AllOfferActivity.this, FavoritesActivity.class);
                     intent.putExtra(OperationNames.offer, favorites);
-                    Log.e("ListFirst", String.valueOf(favorites));
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
@@ -95,7 +94,7 @@ public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.all_offers_activity);
+        setContentView(R.layout.activity_all_offers);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -155,11 +154,10 @@ public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshL
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.e(descriptionString, "Permissions not granted");
+
             ActivityCompat.requestPermissions(AllOfferActivity.this, perms, 1);
             return;
         }
-        Log.e(descriptionString, "Succes: Permissions Granted");
         mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -201,8 +199,6 @@ public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshL
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
         Offer offerDat = dataSnapshot.getValue(Offer.class);
-        Log.e("offer", String.valueOf(offerDat) + "  " + offerDat.getLat());
-        //Brug valueAddedListener
 
 
         double lat = (double) offerDat.getLat();
@@ -211,26 +207,15 @@ public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshL
         locationOfferDistanceToLocation.setLatitude(lat);
         locationOfferDistanceToLocation.setLongitude(lng);
 
-
-
-        Log.e("Location of event: ", locationOfferDistanceToLocation.getLatitude() + " lng: " + locationOfferDistanceToLocation.getLongitude());
-        Log.e("Location of device: ", lastKnownLocation.getLatitude() + " lng: " + lastKnownLocation.getLongitude());
-
         int locationDifference = (int) locationOfferDistanceToLocation.distanceTo(lastKnownLocation);
         //String offerDistanceToLocation = String.valueOf(locationDifference);
         offerDat.setDistanceToLocation(locationDifference);
-        Log.e("OFFER LOCATION TO", String.valueOf(offerDat.getDistanceToLocation()));
         String prefDifString = sharedPreferences.getString("pref_distance", "1000");
         if(prefDifString.isEmpty()){
             prefDifString = "1000";
         }
-        Log.e("DifString", prefDifString);
-        Log.e("Preferences", prefDifString);
-        Log.e("Distance: ", locationDifference + "");
         float prefDif = Float.parseFloat(prefDifString);
         String prefType = sharedPreferences.getString("pref_type", "Everything");
-        Log.e("pre", prefType);
-        Log.e("TypeIsRight", String.valueOf(prefType.equals(OperationNames.everythingType)));
 
         String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
         String year = new SimpleDateFormat("yyyy").format(new Date());
@@ -240,14 +225,11 @@ public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshL
             Date dato = format.parse(offerDat.getDate() + "-" + year);
             Date datoNu = format.parse(date);
             int diff = (int) (dato.getTime() - datoNu.getTime());
-            Log.e("DifferenceDato", String.valueOf(diff));
-            Log.e("Dato", offerDat.getDate());
 
             //Checks if events are within preferences and within 7 days
             if (prefDif > locationDifference && diff < 518400000 && diff > 0) {
                 if (prefType.equals(OperationNames.everythingType) || prefType.equals(offerDat.getType())) {
                     list.add(offerDat);
-                    Log.e("Add", "added");
                 }
             }
         } catch (ParseException e) {
@@ -305,7 +287,6 @@ public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshL
                         // logic for single click event
                         Offer offer = list.get(position);
                         String itdes = offer.getDescription();
-                        Log.e("D", itdes);
 
                         Intent intent = new Intent(AllOfferActivity.this, ItemSelectedActivity.class);
 
