@@ -44,7 +44,7 @@ import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 
-public class allOfferActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, LocationListener, ChildEventListener, AdapterView.OnItemClickListener{
+public class AllOfferActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, LocationListener, ChildEventListener, AdapterView.OnItemClickListener{
 
     DatabaseReference dref;
     ListView listview;
@@ -66,17 +66,17 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_featured:
-                    Intent intent = new Intent(allOfferActivity.this, FeaturedActivity.class);
+                    Intent intent = new Intent(AllOfferActivity.this, FeaturedActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_offers:
-                    intent = new Intent(allOfferActivity.this, allOfferActivity.class);
+                    intent = new Intent(AllOfferActivity.this, AllOfferActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_favorites:
-                    intent = new Intent(allOfferActivity.this, FavoritesActivity.class);
+                    intent = new Intent(AllOfferActivity.this, FavoritesActivity.class);
                     intent.putExtra(OperationNames.offer, favorites);
                     Log.e("ListFirst", String.valueOf(favorites));
                     startActivity(intent);
@@ -128,7 +128,7 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
             @Override
             public void onSwipeLeft() {
                 super.onSwipeLeft();
-                Intent intent = new Intent(allOfferActivity.this, MapsActivity.class);
+                Intent intent = new Intent(AllOfferActivity.this, MapsActivity.class);
                 intent.putExtra("list", list);
                 intent.putExtra("currentPosition", lastKnownLocation);
                 startActivity(intent);
@@ -156,7 +156,7 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
         String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.e(descriptionString, "Permissions not granted");
-            ActivityCompat.requestPermissions(allOfferActivity.this, perms, 1);
+            ActivityCompat.requestPermissions(AllOfferActivity.this, perms, 1);
             return;
         }
         Log.e(descriptionString, "Succes: Permissions Granted");
@@ -177,14 +177,14 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(allOfferActivity.this, SettingsActivity.class);
+            Intent intent = new Intent(AllOfferActivity.this, SettingsActivity.class);
             startActivity(intent);
             return true;
         }
         return true;
     }*/
     public void openSettings(View view){
-        Intent intent = new Intent(allOfferActivity.this, SettingsActivity.class);
+        Intent intent = new Intent(AllOfferActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
 
@@ -193,7 +193,7 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
 
     }
     public void addOffer(View view){
-        Intent intent = new Intent(allOfferActivity.this, AddEventActivity.class);
+        Intent intent = new Intent(AllOfferActivity.this, AddEventActivity.class);
         startActivity(intent);
     }
 
@@ -239,10 +239,12 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
         try {
             Date dato = format.parse(offerDat.getDate() + "-" + year);
             Date datoNu = format.parse(date);
-            int diff = (int) (datoNu.getTime() - dato.getTime());
+            int diff = (int) (dato.getTime() - datoNu.getTime());
+            Log.e("DifferenceDato", String.valueOf(diff));
+            Log.e("Dato", offerDat.getDate());
 
             //Checks if events are within preferences and within 7 days
-            if (prefDif > locationDifference && diff < 518400000) {
+            if (prefDif > locationDifference && diff < 518400000 && diff > 0) {
                 if (prefType.equals(OperationNames.everythingType) || prefType.equals(offerDat.getType())) {
                     list.add(offerDat);
                     Log.e("Add", "added");
@@ -305,7 +307,7 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
                         String itdes = offer.getDescription();
                         Log.e("D", itdes);
 
-                        Intent intent = new Intent(allOfferActivity.this, itemSelectedActivity.class);
+                        Intent intent = new Intent(AllOfferActivity.this, ItemSelectedActivity.class);
 
                         intent.putExtra(OperationNames.offer, offer);
 
@@ -330,7 +332,7 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
 
 
     public void openMaps(View view) {
-        Intent intent = new Intent(allOfferActivity.this, MapsActivity.class);
+        Intent intent = new Intent(AllOfferActivity.this, MapsActivity.class);
         intent.putExtra("list", list);
         intent.putExtra("currentPosition", lastKnownLocation);
         startActivity(intent);

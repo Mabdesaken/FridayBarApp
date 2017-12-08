@@ -34,7 +34,7 @@ public class FavoritesActivity extends AppCompatActivity implements FavoritesOff
                     overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_offers:
-                    intent = new Intent(FavoritesActivity.this, allOfferActivity.class);
+                    intent = new Intent(FavoritesActivity.this, AllOfferActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
@@ -51,7 +51,7 @@ public class FavoritesActivity extends AppCompatActivity implements FavoritesOff
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.favorites);
+        setContentView(R.layout.activity_favorites);
 
         //BottomNavigationBar
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -72,7 +72,7 @@ public class FavoritesActivity extends AppCompatActivity implements FavoritesOff
 
         offerArrayList = new ArrayList<>(OfferManager.getOffers(this));
         if(offerArrayList.size() == 0){
-            Toast.makeText(this, "Please double tap an offer to add it to favorites", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please double tap an offer to add it to Favorites", Toast.LENGTH_LONG).show();
         }
         listView=(ListView)findViewById(R.id.favoritesView);
         adapter = new FavoritesOfferAdapter(this, offerArrayList);
@@ -84,7 +84,6 @@ public class FavoritesActivity extends AppCompatActivity implements FavoritesOff
     public void OnDeleteRequest(int position) {
         Offer offer = offerArrayList.remove(position);
         OfferManager.deleteOffer(offer, this);
-
         adapter.notifyDataSetChanged();
     }
 }

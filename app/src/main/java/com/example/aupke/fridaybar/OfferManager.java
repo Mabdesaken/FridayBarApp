@@ -19,7 +19,7 @@ public class OfferManager {
     public static Set<Offer> getOffers(Context context){
 
         SharedPreferences preferences = context.getSharedPreferences("database", Context.MODE_PRIVATE);
-        String json = preferences.getString("favorites","");
+        String json = preferences.getString("activity_favorites","");
         Log.e("LO", json + "lol");
         Set<Offer> favorites = new Gson().fromJson(json, new TypeToken<Set<Offer>>() {}.getType());
         if(favorites == null){
@@ -32,14 +32,14 @@ public class OfferManager {
         Set<Offer> favorites = new HashSet<>(getOffers(context));
         favorites.add(offer);
         SharedPreferences preferences = context.getSharedPreferences("database", Context.MODE_PRIVATE);
-        preferences.edit().putString("favorites", new Gson().toJson(favorites)).apply();
+        preferences.edit().putString("activity_favorites", new Gson().toJson(favorites)).apply();
     }
 
     public static void deleteOffer(Offer offer, Context context){
         Set<Offer> favorites = new HashSet<>(getOffers(context));
         favorites.remove(offer);
         SharedPreferences preferences = context.getSharedPreferences("database", Context.MODE_PRIVATE);
-        preferences.edit().putString("favorites", new Gson().toJson(favorites)).apply();
+        preferences.edit().putString("activity_favorites", new Gson().toJson(favorites)).apply();
 
 
     }

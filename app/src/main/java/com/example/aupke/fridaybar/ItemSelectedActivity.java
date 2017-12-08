@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-public class itemSelectedActivity extends AppCompatActivity {
+public class ItemSelectedActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,6 @@ public class itemSelectedActivity extends AppCompatActivity {
 
 
     public void goBack(View view){
-        Intent intent = new Intent(itemSelectedActivity.this, allOfferActivity.class);
-        startActivity(intent);
+        super.onBackPressed();
     }
 }

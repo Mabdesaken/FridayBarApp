@@ -47,7 +47,7 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
                     overridePendingTransition(0,0);
                     return true;
                 case R.id.navigation_offers:
-                    intent = new Intent(FeaturedActivity.this, allOfferActivity.class);
+                    intent = new Intent(FeaturedActivity.this, AllOfferActivity.class);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                     return true;
@@ -155,7 +155,7 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
 
         int distance = (int) offerLocation.distanceTo(lastKnownLocation);
         offer.setDistanceToLocation(distance);
-        Intent intent = new Intent(FeaturedActivity.this, itemSelectedActivity.class);
+        Intent intent = new Intent(FeaturedActivity.this, ItemSelectedActivity.class);
         intent.putExtra(OperationNames.offer,offer);
         startActivity(intent);
         overridePendingTransition(0,0);

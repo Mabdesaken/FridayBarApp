@@ -1,18 +1,14 @@
 package com.example.aupke.fridaybar;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -53,7 +49,7 @@ public class AddEventActivity extends AppCompatActivity {
         mDatabase.setValue(offer);
         mDatabase.setValue(offer1);
 
-        Intent intent = new Intent(AddEventActivity.this, allOfferActivity.class);
+        Intent intent = new Intent(AddEventActivity.this, AllOfferActivity.class);
         startActivity(intent);
     }
 
