@@ -49,7 +49,7 @@ public class OfferAdapter extends BaseAdapter {
         if(convertView == null){
             viewHolder = new ViewHolder();
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.offer_list_view, null);
+            convertView = inflater.inflate(R.layout.all_offers_list_view, null);
             viewHolder.locationView = convertView.findViewById(R.id.distanceTextView);
             viewHolder.titleView = convertView.findViewById(R.id.titleTextView);
             viewHolder.barView = convertView.findViewById(R.id.barTextView);

@@ -20,7 +20,7 @@
         <activity android:name=".itemSelectedActivity" />
         <activity
             android:name=".allOfferActivity"
-            android:label="@string/title_activity_main2">
+            android:label="@string/all_offers_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

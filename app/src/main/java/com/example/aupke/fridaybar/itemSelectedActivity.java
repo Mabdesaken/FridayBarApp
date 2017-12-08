@@ -1,9 +1,11 @@
 package com.example.aupke.fridaybar;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +15,12 @@ public class itemSelectedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_selected);
+
+        View view = LayoutInflater.from(this).inflate(R.layout.action_bar_custom_empty, null);
+        TextView titleBar = view.findViewById(R.id.action_bar_title);
+        titleBar.setText(R.string.title_offer_selected);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(view);
 
         TextView title = findViewById(R.id.is_TitleText);
         TextView bar = findViewById(R.id.is_BarText);

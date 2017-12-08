@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -57,6 +61,11 @@ public class FavoritesActivity extends AppCompatActivity implements FavoritesOff
         menuItem.setChecked(true);
 
 
+        View view = LayoutInflater.from(this).inflate(R.layout.action_bar_custom_empty, null);
+        TextView title = view.findViewById(R.id.action_bar_title);
+        title.setText(R.string.title_favorites);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(view);
 
         //listview
 

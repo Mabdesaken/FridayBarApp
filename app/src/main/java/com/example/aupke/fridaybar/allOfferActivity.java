@@ -12,8 +12,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,6 +114,13 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
         adapter=new OfferAdapter(this, list);
         listview.setAdapter(adapter);
 
+        //sets ActionBar
+        View view = LayoutInflater.from(this).inflate(R.layout.action_bar_custom_maps, null);
+        TextView title = view.findViewById(R.id.action_bar_title);
+        title.setText(R.string.all_offers_title);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(view);
+
         dref= FirebaseDatabase.getInstance().getReference().child(OperationNames.eventRoute);
 
         listview.setOnItemClickListener(this);
@@ -163,13 +172,7 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
         });
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         int id = menuItem.getItemId();
@@ -179,6 +182,10 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
             return true;
         }
         return true;
+    }*/
+    public void openSettings(View view){
+        Intent intent = new Intent(allOfferActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -212,8 +219,12 @@ public class allOfferActivity extends AppCompatActivity implements SwipeRefreshL
         int locationDifference = (int) locationOfferDistanceToLocation.distanceTo(lastKnownLocation);
         //String offerDistanceToLocation = String.valueOf(locationDifference);
         offerDat.setDistanceToLocation(locationDifference);
-        //Log.e("OFFER LOCATION TO", String.valueOf(offerDat.getDistanceToLocation()));
-        String prefDifString = sharedPreferences.getString("pref_distance", "500");
+        Log.e("OFFER LOCATION TO", String.valueOf(offerDat.getDistanceToLocation()));
+        String prefDifString = sharedPreferences.getString("pref_distance", "1000");
+        if(prefDifString.isEmpty()){
+            prefDifString = "1000";
+        }
+        Log.e("DifString", prefDifString);
         Log.e("Preferences", prefDifString);
         Log.e("Distance: ", locationDifference + "");
         float prefDif = Float.parseFloat(prefDifString);

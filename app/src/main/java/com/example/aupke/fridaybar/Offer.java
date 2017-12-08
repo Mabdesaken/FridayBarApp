@@ -14,7 +14,7 @@ import java.io.Serializable;
 @IgnoreExtraProperties
 public class Offer implements Serializable, Comparable<Offer> {
     private String bar;
-    @Exclude private int distanceToLocation;
+    private int distanceToLocation;
     private String title;
     private String description;
     private String date;

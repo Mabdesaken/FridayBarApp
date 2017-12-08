@@ -36,6 +36,7 @@ public class FavoritesOfferAdapter extends OfferAdapter {
     private class ViewHolder{
         public Button deleteButton;
         public TextView titleView;
+        public TextView barView;
     }
 
     @Override
@@ -46,6 +47,7 @@ public class FavoritesOfferAdapter extends OfferAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.favorites_list_view, null);
             viewHolder.titleView = convertView.findViewById(R.id.fav_title);
+            viewHolder.barView = convertView.findViewById(R.id.fav_bar_view);
             viewHolder.deleteButton = convertView.findViewById(R.id.fav_deleteButton);
             viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -57,7 +59,7 @@ public class FavoritesOfferAdapter extends OfferAdapter {
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        viewHolder.barView.setText(offerList.get(position).getBar());
         viewHolder.titleView.setText(offerList.get(position).getTitle());
 
         return convertView;

@@ -1,11 +1,16 @@
 package com.example.aupke.fridaybar;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,6 +64,8 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
     private ListView listView;
     private DatabaseReference dref;
     private ArrayList<Offer> featuredList = new ArrayList<>();
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Location lastKnownLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +78,14 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+
+        getLocation();
+
+        View view = LayoutInflater.from(this).inflate(R.layout.action_bar_custom_empty, null);
+        TextView title = view.findViewById(R.id.action_bar_title);
+        title.setText(R.string.title_features);
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(view);
 
         //listview
 
@@ -128,10 +146,39 @@ public class FeaturedActivity extends AppCompatActivity implements ChildEventLis
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Log.e("Adapter", "open");
+        Log.e("Location", String.valueOf(lastKnownLocation));
         Offer offer = featuredList.get(i);
+        //Distance to Location calculation
+        Location offerLocation = new Location("");
+        offerLocation.setLatitude(offer.getLat());
+        offerLocation.setLongitude(offer.getLng());
+
+        int distance = (int) offerLocation.distanceTo(lastKnownLocation);
+        offer.setDistanceToLocation(distance);
         Intent intent = new Intent(FeaturedActivity.this, itemSelectedActivity.class);
         intent.putExtra(OperationNames.offer,offer);
         startActivity(intent);
         overridePendingTransition(0,0);
+    }
+
+    private void getLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        String[] perms = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(FeaturedActivity.this, perms, 1);
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    Log.e("Location", "UPDATED");
+                    lastKnownLocation = location;
+                } else {
+                    Log.e("FAIL IN", "getLocation");
+                }
+            }
+        });
     }
 }

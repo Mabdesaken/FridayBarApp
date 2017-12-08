@@ -31,6 +31,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/fav_bar_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="BarView"
+            android:textSize="14dp"
+            android:textColor="@color/colorGrey"/>
+
         <Button
             android:id="@+id/fav_deleteButton"
             android:layout_width="30dp"
