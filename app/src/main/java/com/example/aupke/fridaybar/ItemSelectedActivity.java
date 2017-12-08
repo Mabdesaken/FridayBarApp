@@ -1,6 +1,7 @@
 package com.example.aupke.fridaybar;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.widget.TextView;
 
 public class ItemSelectedActivity extends AppCompatActivity {
+
+    private String lat;
+    private String lng;
+    private String barName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +34,16 @@ public class ItemSelectedActivity extends AppCompatActivity {
         TextView distance = findViewById(R.id.is_DistanceText);
         Intent intent = getIntent();
         Offer offer = (Offer) intent.getSerializableExtra(OperationNames.offer);
+        lat = String.valueOf(offer.getLat());
+        lng = String.valueOf(offer.getLng());
+        barName = String.valueOf(offer.getBar());
 
         title.setText(offer.getTitle());
         description.setText(offer.getDescription());
         date.setText(offer.getDate());
         Log.e("Distance", String.valueOf(offer.getDistanceToLocation()));
         distance.setText(offer.getDistanceToLocation() + "m");
-        bar.setText(offer.getBar());
+        bar.setText(barName);
 
     }
 
@@ -43,5 +51,11 @@ public class ItemSelectedActivity extends AppCompatActivity {
 
     public void goBack(View view){
         super.onBackPressed();
+    }
+
+    public void openMapsWithDirections(View view){
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse("geo:0,0?q=" +lat + "," + lng + " (" + barName + ")"));
+        startActivity(intent);
     }
 }
