@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import es.dmoral.toasty.Toasty;
+
 public class FavoritesActivity extends AppCompatActivity implements FavoritesOfferAdapter.OnDeleteButtonListener {
 
     private ListView listView;
@@ -72,7 +74,7 @@ public class FavoritesActivity extends AppCompatActivity implements FavoritesOff
 
         offerArrayList = new ArrayList<>(OfferManager.getOffers(this));
         if(offerArrayList.size() == 0){
-            Toast.makeText(this, "Please double tap an offer to add it to Favorites", Toast.LENGTH_LONG).show();
+            Toasty.normal(this, "Please double tap an offer to add it to Favorites", Toast.LENGTH_LONG).show();
         }
         listView=(ListView)findViewById(R.id.favoritesView);
         adapter = new FavoritesOfferAdapter(this, offerArrayList);
